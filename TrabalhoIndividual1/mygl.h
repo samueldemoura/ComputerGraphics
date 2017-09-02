@@ -12,7 +12,7 @@
 class color
 {
 	public:
-		int r, g, b, a;
+		float r, g, b, a;
 
 		color(int r, int g, int b, int a)
 		{
@@ -48,13 +48,13 @@ void PutPixel(vect2d v, color c)
 // are shifted into the first octant, thrown into the algorithm and then
 // moved back to their original octant before being drawn on-screen.
 //
-// d = delta; i = input; f = final; r = error margin
+// d = delta; i = input; r = error margin
 void DrawLine(vect2d v1, vect2d v2, color c1, color c2)
 {
 	int oct;
 	int dix = v2.x - v1.x;
 	int diy = v2.y - v1.y;
-	int x1, x2, y1, y2, xf, yf;
+	int x1, x2, y1, y2;
 
 	// Determine which octant the line belongs to, save
 	// it for later and move it into the first octant
@@ -157,50 +157,41 @@ void DrawLine(vect2d v1, vect2d v2, color c1, color c2)
 
 	for (int x = x1; x < x2; ++x)
 	{
+		// Interpolate colors
+		c.r += rv;
+		c.g += gv;
+		c.b += bv;
+		c.a += av;
+
 		// Shift coordinates back into original octant
 		switch (oct)
 		{
 			case 0: 
-				xf = x;
-				yf = y;
+				PutPixel(vect2d(x, y), c);
 				break;
 			case 1: 
-				xf = y;
-				yf = x;
+				PutPixel(vect2d(y, x), c);
 				break;
 			case 6: 
-				xf = y;
-				yf = -x;
+				PutPixel(vect2d(y, -x), c);
 				break;
 			case 3: 
-				xf = -x;
-				yf = y;
+				PutPixel(vect2d(-x, y), c);
 				break;
 			case 4: 
-				xf = -x;
-				yf = -y;
+				PutPixel(vect2d(-x, -y), c);
 				break;
 			case 5: 
-				xf = -y;
-				yf = -x;
+				PutPixel(vect2d(-y, -x), c);
 				break;
 			case 2: 
-				xf = -y;
-				yf = x;
+				PutPixel(vect2d(-y, x), c);
 				break;
 			case 7: 
-				xf = x;
-				yf = -y;
+				PutPixel(vect2d(x, -y), c);
 				break;
 		}
 
-		// Color interpolation
-		c.r = c1.r + rv*(x2 - x);
-		c.g = c1.g + gv*(x2 - x);
-		c.b = c1.b + bv*(x2 - x);
-		c.a = c1.a + av*(x2 - x);
-
-		PutPixel(vect2d(xf, yf), c);
 		r += dr;
 
 		if (r >= 0.5)
@@ -215,8 +206,8 @@ void DrawLine(vect2d v1, vect2d v2, color c1, color c2)
 void DrawTriangle(vect2d v1, vect2d v2, vect2d v3, color c1, color c2, color c3)
 {
 	DrawLine(v1, v2, c1, c2);
-	DrawLine(v2, v3, c3, c1);
-	DrawLine(v3, v1, c2, c3);
+	DrawLine(v2, v3, c2, c3);
+	DrawLine(v3, v1, c3, c1); 
 }
 
 #endif // _MYGL_H_
