@@ -1,5 +1,4 @@
 #include "main.h"
-#include <math.h>
 
 //-----------------------------------------------------------------------------
 void MyGlDraw(void)
@@ -10,12 +9,12 @@ void MyGlDraw(void)
 
 	for (int padding = IMAGE_HEIGHT/4; padding < IMAGE_HEIGHT/2; padding += 4)
 	{
-		DrawTriangle(padding, IMAGE_HEIGHT - padding,
-					IMAGE_WIDTH / 2, padding,
-					IMAGE_WIDTH - padding, IMAGE_HEIGHT - padding,
-					color(255, 0, 0, 255),
-					color(0, 255, 0, 255),
-					color(0, 0, 255, 255));
+		DrawTriangle(vect2d(padding, IMAGE_HEIGHT - padding),
+					 vect2d(IMAGE_WIDTH / 2, padding),
+					 vect2d(IMAGE_WIDTH - padding, IMAGE_HEIGHT - padding),
+					 color(255, 0, 0, 255),
+					 color(0, 255, 0, 255),
+					 color(0, 0, 255, 255));
 	}
 }
 

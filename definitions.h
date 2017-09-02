@@ -6,22 +6,5 @@
 
 unsigned char * FBptr;
 
-class color
-{
-	public:
-		int r;
-		int g;
-		int b;
-		int a;
-
-		color(int r, int g, int b, int a)
-		{
-			this->r = r;
-			this->g = g;
-			this->b = b;
-			this->a = a;
-		}
-};
-
 #endif // _DEFINITIONS_H_
 

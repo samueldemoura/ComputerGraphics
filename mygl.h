@@ -2,20 +2,46 @@
 #define _MYGL_H_
 
 #include "definitions.h"
-#include <iostream>
-#include <math.h>
+#include <math.h> // sqrt, pow
 
 //*****************************************************************************
 // Defina aqui as suas funções gráficas
 //*****************************************************************************
 
-// Self-explanatory
-void PutPixel(int x, int y, color c)
+// For easier handling of function arguments
+class color
 {
-	FBptr[4*x + (4*y*IMAGE_WIDTH) + 0] = c.r;
-	FBptr[4*x + (4*y*IMAGE_WIDTH) + 1] = c.g;
-	FBptr[4*x + (4*y*IMAGE_WIDTH) + 2] = c.b;
-	FBptr[4*x + (4*y*IMAGE_WIDTH) + 3] = c.a;
+	public:
+		int r, g, b, a;
+
+		color(int r, int g, int b, int a)
+		{
+			this->r = r;
+			this->g = g;
+			this->b = b;
+			this->a = a;
+		}
+};
+
+class vect2d
+{
+	public:
+		int x, y;
+
+		vect2d(int x, int y)
+		{
+			this->x = x;
+			this->y = y;
+		}
+};
+
+// Self-explanatory
+void PutPixel(vect2d v, color c)
+{
+	FBptr[4*v.x + (4*v.y*IMAGE_WIDTH) + 0] = c.r;
+	FBptr[4*v.x + (4*v.y*IMAGE_WIDTH) + 1] = c.g;
+	FBptr[4*v.x + (4*v.y*IMAGE_WIDTH) + 2] = c.b;
+	FBptr[4*v.x + (4*v.y*IMAGE_WIDTH) + 3] = c.a;
 }
 
 // Bresenham algorithm generalized to all 8 octants: the input coordinates
@@ -23,15 +49,15 @@ void PutPixel(int x, int y, color c)
 // moved back to their original octant before being drawn on-screen.
 //
 // d = delta; i = input; f = final; r = error margin
-void DrawLine(int xi1, int yi1, int xi2, int yi2, color c1, color c2)
+void DrawLine(vect2d v1, vect2d v2, color c1, color c2)
 {
 	int oct;
-	int dix = xi2 - xi1;
-	int diy = yi2 - yi1;
+	int dix = v2.x - v1.x;
+	int diy = v2.y - v1.y;
 	int x1, x2, y1, y2, xf, yf;
 
 	// Color interpolation
-	int d = sqrt(pow((xi1 - xi2),2) + pow((yi1 - yi2),2));
+	int d = sqrt(pow((dix),2) + pow((diy),2));
 
 	color c(0, 0, 0, 0);
 	float rv = (c2.r - c1.r) / (float)d;
@@ -39,7 +65,8 @@ void DrawLine(int xi1, int yi1, int xi2, int yi2, color c1, color c2)
 	float bv = (c2.b - c1.b) / (float)d;
 	float av = (c2.a - c1.a) / (float)d;
 
-	// Determine which octant the line belongs to
+	// Determine which octant the line belongs to, save
+	// it for later and move it into the first octant
 	if (dix >= 0)
 	{
 		if (diy >= 0)
@@ -47,10 +74,18 @@ void DrawLine(int xi1, int yi1, int xi2, int yi2, color c1, color c2)
 			if (dix >= diy)
 			{
 				oct = 0;
+				x1 = v1.x;
+				x2 = v2.x;
+				y1 = v1.y;
+				y2 = v2.y;
 			}
 			else
 			{
 				oct = 1;
+				x1 = v1.y;
+				x2 = v2.y;
+				y1 = v1.x;
+				y2 = v2.x;
 			}
 		}
 		else
@@ -58,10 +93,18 @@ void DrawLine(int xi1, int yi1, int xi2, int yi2, color c1, color c2)
 			if (dix >= -diy)
 			{
 				oct = 7;
+				x1 = v1.x;
+				x2 = v2.x;
+				y1 = -v1.y;
+				y2 = -v2.y;
 			}
 			else
 			{
 				oct = 6;
+				x1 = -v1.y;
+				x2 = -v2.y;
+				y1 = v1.x;
+				y2 = v2.x;
 			}
 		}
 	}
@@ -72,10 +115,18 @@ void DrawLine(int xi1, int yi1, int xi2, int yi2, color c1, color c2)
 			if (-dix >= diy)
 			{
 				oct = 3;
+				x1 = -v1.x;
+				x2 = -v2.x;
+				y1 = v1.y;
+				y2 = v2.y;
 			}
 			else
 			{
 				oct = 2;
+				x1 = v1.y;
+				x2 = v2.y;
+				y1 = -v1.x;
+				y2 = -v2.x;
 			}
 		}
 		else
@@ -83,65 +134,20 @@ void DrawLine(int xi1, int yi1, int xi2, int yi2, color c1, color c2)
 			if (-dix >= -diy)
 			{
 				oct = 4;
+				x1 = -v1.x;
+				x2 = -v2.x;
+				y1 = -v1.y;
+				y2 = -v2.y;
 			}
 			else
 			{
 				oct = 5;
+				x1 = -v1.y;
+				x2 = -v2.y;
+				y1 = -v1.x;
+				y2 = -v2.x;
 			}
 		}
-	}
-
-	// Move it into the first octant
-	switch (oct)
-	{
-		case 0: 
-			x1 = xi1;
-			x2 = xi2;
-			y1 = yi1;
-			y2 = yi2;
-			break;
-		case 1: 
-			x1 = yi1;
-			x2 = yi2;
-			y1 = xi1;
-			y2 = xi2;
-			break;
-		case 2: 
-			x1 = yi1;
-			x2 = yi2;
-			y1 = -xi1;
-			y2 = -xi2;
-			break;
-		case 3: 
-			x1 = -xi1;
-			x2 = -xi2;
-			y1 = yi1;
-			y2 = yi2;
-			break;
-		case 4: 
-			x1 = -xi1;
-			x2 = -xi2;
-			y1 = -yi1;
-			y2 = -yi2;
-			break;
-		case 5: 
-			x1 = -yi1;
-			x2 = -yi2;
-			y1 = -xi1;
-			y2 = -xi2;
-			break;
-		case 6: 
-			x1 = -yi1;
-			x2 = -yi2;
-			y1 = xi1;
-			y2 = xi2;
-			break;
-		case 7: 
-			x1 = xi1;
-			x2 = xi2;
-			y1 = -yi1;
-			y2 = -yi2;
-			break;
 	}
 
 	// Bresenham's algorithm starts here
@@ -197,7 +203,7 @@ void DrawLine(int xi1, int yi1, int xi2, int yi2, color c1, color c2)
 		c.b = c1.b + bv*(x2 - x);
 		c.a = c1.a + av*(x2 - x);
 
-		PutPixel(xf, yf, c);
+		PutPixel(vect2d(xf, yf), c);
 		r += dr;
 
 		if (r >= 0.5)
@@ -209,11 +215,11 @@ void DrawLine(int xi1, int yi1, int xi2, int yi2, color c1, color c2)
 }
 
 // Draws the outline of a triangle
-void DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, color c1, color c2, color c3)
+void DrawTriangle(vect2d v1, vect2d v2, vect2d v3, color c1, color c2, color c3)
 {
-	DrawLine(x1, y1, x2, y2, c1, c2);
-	DrawLine(x2, y2, x3, y3, c3, c1);
-	DrawLine(x3, y3, x1, y1, c2, c3);
+	DrawLine(v1, v2, c1, c2);
+	DrawLine(v2, v3, c3, c1);
+	DrawLine(v3, v1, c2, c3);
 }
 
 #endif // _MYGL_H_
