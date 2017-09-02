@@ -35,7 +35,7 @@ for (int i = 0; i < IMAGE_HEIGHT; ++i)
 }
 ```
 
-O algoritmo inicial acontece da seguinte forma: Encontramos a variação entre as cores finais e iniciais para cada componente RGBA. Essa variação agora é dividida pela quantidade de pixels que vamos desenhar (representada por dx), o que nos dá um número representante da variação de cor que deve acontecer a cada iteração. Finalmente, ao desenhar o pixel, pegamos a cor inicial e acrescentamos: esse valor númerico vezes a quantidade de pixels que já andamos no algoritmo.
+O algoritmo inicial acontece da seguinte forma: Encontramos a variação entre as cores finais e iniciais para cada componente RGBA. Essa variação agora é dividida pela quantidade de pixels que vamos desenhar (representada por dx), o que nos dá um número representante da variação de cor que deve acontecer a cada iteração. Finalmente, ao desenhar o pixel, pegamos a cor prévia e acrescentamos esse valor.
 
 ## DrawTriangle
 ![Triangles](/TrabalhoIndividual1/images/triangle.png)
@@ -54,4 +54,9 @@ for (int padding = IMAGE_HEIGHT/4; padding < IMAGE_HEIGHT/2; padding += 4)
 Também uma função trivial de ser implementada. Recebe 3 cores e 6 coordenadas, representando 3 vértices. Assim, basta chamar a função DrawLine para desenhar linhas do ponto A ao B, B ao C e C ao A. Como a própria DrawLine já faz a interpolação de cores, basta repassar as 3 cores recebidas que o triângulo será desenhado com a interpolação entre as cores dos vértices.
 
 ## Conclusão
-TODO: terminar README.md
+Todas as funções apresentadas na proposta do projeto foram implementadas com a funcionalidade adequada. Ainda assim, foi possível fazer algumas alterações:
+- O algoritmo de interpolação de cores ainda é razoavelmente ineficiente, mas foi possível melhorar-lo. Inicialmente, os valores RGBA eram guardados em ints, logo não era possível acrescentar valores decimais a eles. Assim, para cada pixel a ser desenhado durante o algoritmo de Bresenham, era preciso calcular partindo da cor inicial, pegando quantos pixels já foram andados e finalmente multiplicando com o valor que representa a variação de cor que deve acontecer por pixel.
+Ao armazenar os valores de RGBA em floats, tornou-se possível simplesmente começar com a cor inicial e acrescentar a variação de cor em cada iteração do laço.
+- Ainda falando sobre o algoritmo de interpolação de cores: seria possível deixar-lô com uma aparência mais natural. Como visto nas imagens anteriores, as cores aparentam escurecer/esclarecer e desbotar durante a interpolação. Isso pode ser resolvido se, antes de passar pelo algoritmo, as cores fossem convertidas para o espaço de cor HSV, interpoladas e depois convertidas de volta para RGB para desenhar na tela. Isso acontece pois o espaço HSV tem elementos separados para cor, saturação e luminosidade, permitindo a alteração de cada um de forma individual.
+- Para generalizar o algoritmo de Bresenham, determinamos a qual octante a linha pertence, transformamos ela em uma linha do primeiro octante, rodamos uma iteração do algoritmo, convertemos a saída do algoritmo de volta para o octante original e finalmente a desenhamos na tela. Inicialmente, a checagem do octante ocorria através de 8 ifs com 3 condições cada. Foi possível re-estruturar de forma que a checagem precisa passar somente por 3 ifs de condição única.
+Além disso, no final de cada iteração a função entrava em um switch-case para armazenar as coordenadas x,y em duas novas variáveis com as devidas alterações de maneira que a linha fosse desenhada no octante correto. Foi possível remanejar o código para que a função PutPixel fosse chamada diretamente dentro dos cases do switch-case, com as devidas inversões já feitas, evitando declarar duas novas variáveis.
