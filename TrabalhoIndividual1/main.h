@@ -6,6 +6,9 @@
 #include "definitions.h"
 #include "mygl.h"
 
+// RENDER TIME CALC
+//int oldTimeSinceStart;
+
 GLuint tex;
 
 void (*DrawFunc)(void);
@@ -48,6 +51,13 @@ void display(void)
 	glFlush();
 	glutSwapBuffers();
 	glutPostRedisplay();
+
+	// RENDER TIME CALC
+	/*int timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
+    int deltaTime = timeSinceStart - oldTimeSinceStart;
+    oldTimeSinceStart = timeSinceStart;
+
+    std::cout << "FPS: " << 1000/(deltaTime) << std::endl;*/
 }
 
 //*****************************************************************************
@@ -75,6 +85,9 @@ void InitOpenGL(int *argc, char **argv)
 	glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+	// RENDER TIME CALC
+	//oldTimeSinceStart = 0;
 }
 
 //*****************************************************************************

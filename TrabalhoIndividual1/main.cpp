@@ -16,6 +16,17 @@ void MyGlDraw(void)
 					 color(0, 255, 0, 255),
 					 color(0, 0, 255, 255));
 	}
+
+	/*for (int i = 0; i < IMAGE_HEIGHT; ++i)
+	{
+		DrawLine(vect2d(0, i),
+				 vect2d(IMAGE_WIDTH, i),
+				 color( (float)i * 255/512, 255 - (float)i * 255/512, 100 + i/512, 255 ),
+				 color( 0, (float)i * 255/512, 255 - (float)i * 255/512, 255));
+	}*/
+
+	/*DrawLine(vect2d(IMAGE_WIDTH / 3, IMAGE_HEIGHT * 2/3), vect2d(IMAGE_WIDTH * 2/3, IMAGE_HEIGHT / 3),
+			color(255, 0, 0, 255), color(110, 110, 255, 255));*/
 }
 
 //-----------------------------------------------------------------------------

@@ -56,15 +56,6 @@ void DrawLine(vect2d v1, vect2d v2, color c1, color c2)
 	int diy = v2.y - v1.y;
 	int x1, x2, y1, y2, xf, yf;
 
-	// Color interpolation
-	int d = sqrt(pow((dix),2) + pow((diy),2));
-
-	color c(0, 0, 0, 0);
-	float rv = (c2.r - c1.r) / (float)d;
-	float gv = (c2.g - c1.g) / (float)d;
-	float bv = (c2.b - c1.b) / (float)d;
-	float av = (c2.a - c1.a) / (float)d;
-
 	// Determine which octant the line belongs to, save
 	// it for later and move it into the first octant
 	if (dix >= 0)
@@ -155,8 +146,14 @@ void DrawLine(vect2d v1, vect2d v2, color c1, color c2)
 	float dy = y2 - y1;
 	float dr = dy / dx;
 	float r = 0;
-
 	int y =  y1;
+
+	// Color interpolation
+	color c = c1;
+	float rv = (c2.r - c1.r) / dx;
+	float gv = (c2.g - c1.g) / dx;
+	float bv = (c2.b - c1.b) / dx;
+	float av = (c2.a - c1.a) / dx;
 
 	for (int x = x1; x < x2; ++x)
 	{
