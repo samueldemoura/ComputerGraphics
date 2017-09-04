@@ -17,12 +17,9 @@ void MyGlDraw(void)
 					 color(0, 0, 255, 255));
 	}*/
 
-	vect2d v1 = vect2d(32, 480); // Leftmost vertex
-	vect2d v2 = vect2d(256, 64); // Center-top vertex
-	vect2d v3 = vect2d(512 - 32, 320); // Rightmost vertex
-
-	// v1 v3 v2
-	DrawFilledTriangle(v1, v2, v3,
+	DrawFilledTriangle(vect2d(32, 480),
+			   vect2d(256, 64),
+			   vect2d(512 - 32, 320),
 			   color(255, 0, 0, 255),
 			   color(0, 255, 0, 255),
 			   color(0, 0, 255, 255));

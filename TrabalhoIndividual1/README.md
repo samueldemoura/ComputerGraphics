@@ -53,6 +53,21 @@ for (int padding = IMAGE_HEIGHT/4; padding < IMAGE_HEIGHT/2; padding += 4)
 
 Também uma função trivial de ser implementada. Recebe 3 cores e 6 coordenadas, representando 3 vértices. Assim, basta chamar a função DrawLine para desenhar linhas do ponto A ao B, B ao C e C ao A. Como a própria DrawLine já faz a interpolação de cores, basta repassar as 3 cores recebidas que o triângulo será desenhado com a interpolação entre as cores dos vértices.
 
+## DrawFilledTriangle
+![FilledTriangle](/TrabalhoIndividual1/images/filledTriangle.png)
+```c++
+DrawFilledTriangle(vect2d(32, 480),
+		   vect2d(256, 64),
+		   vect2d(512 - 32, 320),
+		   color(255, 0, 0, 255),
+		   color(0, 255, 0, 255),
+		   color(0, 0, 255, 255));
+```
+
+Para fazer o desenho do triângulo preenchido, foi reutilizado o código do algoritmo de Bresenham com algumas alterações. O algoritmo está desenhando uma linha do vértice v1 ao vértice v2. Toda vez que um pixel é desenhado na tela, além do próprio pixel, utilizamos a função DrawLine para traçar uma linha deste pixel até o vértice v3, preenchendo o interior do triângulo.
+
+Mas, devido à imprecisão dos pixels das linhas durante o processo de rasterização, quanto mais se afasta do vértice v3, mais "poroso" vai ficando o triângulo. Para solucionar isso, o algoritmo descrito anteriormente foi todo movido para uma função DrawFilledTrianglePass. Agora, a função DrawFilledTriangle chama esta outra 3 vezes, cada vez alterando a ordem dos vértices de forma que o triângulo seja completamente preenchido.
+
 ## Conclusão
 Todas as funções apresentadas na proposta do projeto foram implementadas com a funcionalidade adequada. Ainda assim, foi possível fazer algumas alterações:
 - O algoritmo de interpolação de cores ainda é razoavelmente ineficiente, mas foi possível melhorar-lo. Inicialmente, os valores RGBA eram guardados em ints, logo não era possível acrescentar valores decimais a eles. Assim, para cada pixel a ser desenhado durante o algoritmo de Bresenham, era preciso calcular partindo da cor inicial, pegando quantos pixels já foram andados e finalmente multiplicando com o valor que representa a variação de cor que deve acontecer por pixel.
