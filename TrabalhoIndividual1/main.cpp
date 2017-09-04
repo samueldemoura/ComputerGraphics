@@ -7,7 +7,7 @@ void MyGlDraw(void)
 	// Chame aqui as funções do mygl.h
 	//*************************************************************************
 
-	for (int padding = IMAGE_HEIGHT/4; padding < IMAGE_HEIGHT/2; padding += 4)
+	/*for (int padding = IMAGE_HEIGHT/4; padding < IMAGE_HEIGHT/2; padding += 4)
 	{
 		DrawTriangle(vect2d(padding, IMAGE_HEIGHT - padding),
 					 vect2d(IMAGE_WIDTH / 2, padding),
@@ -15,7 +15,17 @@ void MyGlDraw(void)
 					 color(255, 0, 0, 255),
 					 color(0, 255, 0, 255),
 					 color(0, 0, 255, 255));
-	}
+	}*/
+
+	vect2d v1 = vect2d(32, 480); // Leftmost vertex
+	vect2d v2 = vect2d(256, 64); // Center-top vertex
+	vect2d v3 = vect2d(512 - 32, 320); // Rightmost vertex
+
+	// v1 v3 v2
+	DrawFilledTriangle(v1, v2, v3,
+			   color(255, 0, 0, 255),
+			   color(0, 255, 0, 255),
+			   color(0, 0, 255, 255));
 
 	/*for (int i = 0; i < IMAGE_HEIGHT; ++i)
 	{
